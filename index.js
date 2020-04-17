@@ -1,5 +1,6 @@
 'use strict';
 
+const root = this;
 const assert = require('assert');
 
 function html5Template() {
@@ -15,22 +16,25 @@ function html5Template() {
          '</html>';
 }
 
-function fragmentTemplateHandler(pattern) {
-  let out = `<${pattern}></${pattern}>`;
+function fragmentTemplateHandler(pattern, value='') {
+  let out = '';
   let fragment = [];
   if (pattern === 'html:5') {
     out = html5Template();
-  } else if (pattern.indexOf('#') > -1 && pattern.indexOf('.') > -1) {
+  } else if (pattern !== undefined && pattern.indexOf('#') > -1 && pattern.indexOf('.') > -1) {
     let fragment = pattern.split('#');
     let subFragment = fragment[1].split('.');
     out = `<${fragment[0]} id="${subFragment[0]}" class="${subFragment[1]}">` +
+          `${value}` +
           `</${fragment[0]}>`;
-  } else if (pattern.indexOf('.') > -1) {
+  } else if (pattern !== undefined && pattern.indexOf('.') > -1) {
     let fragment = pattern.split('.');
-    out = `<${fragment[0]} class="${fragment[1]}"></${fragment[0]}>`;
-  } else if (pattern.indexOf('#') > -1) {
+    out = `<${fragment[0]} class="${fragment[1]}">${value}</${fragment[0]}>`;
+  } else if (pattern !== undefined && pattern.indexOf('#') > -1) {
     let fragment = pattern.split('#');
-    out = `<${fragment[0]} id="${fragment[1]}"></${fragment[0]}>`;
+    out = `<${fragment[0]} id="${fragment[1]}">${value}</${fragment[0]}>`;
+  } else if (pattern) {
+    out = `<${pattern}>${value}</${pattern}>`
   }
   return out;
 }
@@ -49,14 +53,27 @@ assert.equal(
   '</html>'
 );
 
-function expandHandler(pattern) {
+function expandHandler(pattern, value='') {
   let out = null;
-  if (pattern.indexOf('+') > -1) {
-    out = pattern.split('+').map(v => fragmentTemplateHandler(v)).join('');
+  if (pattern.indexOf('>') > -1) {
+    let fragments = pattern.split('>');
+    out = '$template$';
+    fragments.forEach((v, i) => {
+      let replacer = '$template$';
+      if (i === fragments.length - 1) replacer = '';
+      if (v.indexOf('+') > -1 || v.indexOf('*') > -1) {
+        v = expandHandler(v, value);
+        out = out.replace('$template$', v);
+      } else {
+        out = out.replace('$template$', fragmentTemplateHandler(v, replacer));
+      }
+    });
+  } else if (pattern.indexOf('+') > -1) {
+    out = pattern.split('+').map(v => fragmentTemplateHandler(v, value)).join('');
   } else if (pattern.indexOf('*') > -1) {
     let fragment = pattern.split('*');
     out = (new Array(parseInt(fragment[1], 10)))
-            .fill(fragmentTemplateHandler(fragment[0]))
+            .fill(fragmentTemplateHandler(fragment[0], value))
             .map((v, i) => {
               if (v.indexOf('$$') > -1) {
                 return v.replace('$$', i+1 < 10 ? '0' + (i+1) : i);
@@ -66,10 +83,11 @@ function expandHandler(pattern) {
             })
             .join('');
   } else {
-    out = fragmentTemplateHandler(pattern);
+    out = fragmentTemplateHandler(pattern, value);
   }
   return out;
 }
+root.expand = expandHandler;
 assert.equal(expandHandler('p'), '<p></p>');
 assert.equal(expandHandler('p+p'), '<p></p><p></p>');
 assert.equal(expandHandler('p*3'), '<p></p><p></p><p></p>');
@@ -102,4 +120,22 @@ assert.equal(
 assert.equal(
   expandHandler('p#first-paragraph.spotted'),
   '<p id="first-paragraph" class="spotted"></p>'
+);
+
+assert.equal(
+  expandHandler('p>a'),
+  '<p><a></a></p>'
+);
+assert.equal(expandHandler('p>a>span'), '<p><a><span></span></a></p>');
+assert.equal(
+  expandHandler('p>a>span>b'),
+  '<p><a><span><b></b></span></a></p>'
+);
+assert.equal(
+  expandHandler('p>a+span'),
+  '<p><a></a><span></span></p>'
+);
+assert.equal(
+  expandHandler('p>a*3'),
+  '<p><a></a><a></a><a></a></p>'
 );
