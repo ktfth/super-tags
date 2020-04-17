@@ -3,7 +3,13 @@
 const assert = require('assert');
 
 function fragmentTemplateHandler(pattern) {
-  return `<${pattern}></${pattern}>`;
+  let out = `<${pattern}></${pattern}>`;
+  let fragment = [];
+  if (pattern.indexOf('.') > -1) {
+    let fragment = pattern.split('.');
+    out = `<${fragment[0]} class="${fragment[1]}"></${fragment[0]}>`;
+  }
+  return out;
 }
 assert.equal(fragmentTemplateHandler('p'), '<p></p>');
 
@@ -24,3 +30,5 @@ function expandHandler(pattern) {
 assert.equal(expandHandler('p'), '<p></p>');
 assert.equal(expandHandler('p+p'), '<p></p><p></p>');
 assert.equal(expandHandler('p*3'), '<p></p><p></p><p></p>');
+
+assert.equal(expandHandler('p.text-align'), '<p class="text-align"></p>');
