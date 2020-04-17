@@ -171,4 +171,4 @@ assert.equal(
 
 let args = process.argv.slice(2);
 
-console.log(expandHandler(args[0]));
+console.log(highLevelExpansionHandler(args[0]));
