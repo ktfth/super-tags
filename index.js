@@ -5,10 +5,15 @@ const assert = require('assert');
 function fragmentTemplateHandler(pattern) {
   let out = `<${pattern}></${pattern}>`;
   let fragment = [];
-  if (pattern.indexOf('.') > -1) {
+  if (pattern.indexOf('#') > -1 && pattern.indexOf('.') > -1) {
+    let fragment = pattern.split('#');
+    let subFragment = fragment[1].split('.');
+    out = `<${fragment[0]} id="${subFragment[0]}" class="${subFragment[1]}">` +
+          `</${fragment[0]}>`;
+  } else if (pattern.indexOf('.') > -1) {
     let fragment = pattern.split('.');
     out = `<${fragment[0]} class="${fragment[1]}"></${fragment[0]}>`;
-  } if (pattern.indexOf('#') > -1) {
+  } else if (pattern.indexOf('#') > -1) {
     let fragment = pattern.split('#');
     out = `<${fragment[0]} id="${fragment[1]}"></${fragment[0]}>`;
   }
@@ -64,4 +69,9 @@ assert.equal(
   '<p id="paragraph-01"></p>' +
   '<p id="paragraph-02"></p>' +
   '<p id="paragraph-03"></p>'
+);
+
+assert.equal(
+  expandHandler('p#first-paragraph.spotted'),
+  '<p id="first-paragraph" class="spotted"></p>'
 );
