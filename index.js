@@ -24,6 +24,13 @@ function expandHandler(pattern) {
     let fragment = pattern.split('*');
     out = (new Array(parseInt(fragment[1], 10)))
             .fill(fragmentTemplateHandler(fragment[0]))
+            .map((v, i) => {
+              if (v.indexOf('$$') > -1) {
+                return v.replace('$$', i+1 < 10 ? '0' + (i+1) : i);
+              }
+
+              return v;
+            })
             .join('');
   } else {
     out = fragmentTemplateHandler(pattern);
@@ -47,3 +54,14 @@ assert.equal(
 );
 
 assert.equal(expandHandler('p#first-paragraph'), '<p id="first-paragraph"></p>');
+assert.equal(
+  expandHandler('p#spotted+p#first-paragraph'),
+  '<p id="spotted"></p>' +
+  '<p id="first-paragraph"></p>'
+);
+assert.equal(
+  expandHandler('p#paragraph-$$*3'),
+  '<p id="paragraph-01"></p>' +
+  '<p id="paragraph-02"></p>' +
+  '<p id="paragraph-03"></p>'
+);
