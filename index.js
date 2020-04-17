@@ -139,3 +139,7 @@ assert.equal(
   expandHandler('p>a*3'),
   '<p><a></a><a></a><a></a></p>'
 );
+
+let args = process.argv.slice(2);
+
+console.log(expandHandler(args[0]));
