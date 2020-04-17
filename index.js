@@ -2,10 +2,25 @@
 
 const assert = require('assert');
 
+function html5Template() {
+  return '<!DOCTYPE HTML>' +
+         '<html lang="en">' +
+         '<head>' +
+         '	<meta charset="UTF-8">' +
+         '	<title></title>' +
+         '</head>' +
+         '<body>' +
+         '' +
+         '</body>' +
+         '</html>';
+}
+
 function fragmentTemplateHandler(pattern) {
   let out = `<${pattern}></${pattern}>`;
   let fragment = [];
-  if (pattern.indexOf('#') > -1 && pattern.indexOf('.') > -1) {
+  if (pattern === 'html:5') {
+    out = html5Template();
+  } else if (pattern.indexOf('#') > -1 && pattern.indexOf('.') > -1) {
     let fragment = pattern.split('#');
     let subFragment = fragment[1].split('.');
     out = `<${fragment[0]} id="${subFragment[0]}" class="${subFragment[1]}">` +
@@ -20,6 +35,19 @@ function fragmentTemplateHandler(pattern) {
   return out;
 }
 assert.equal(fragmentTemplateHandler('p'), '<p></p>');
+assert.equal(
+  fragmentTemplateHandler('html:5'),
+  '<!DOCTYPE HTML>' +
+  '<html lang="en">' +
+  '<head>' +
+  '	<meta charset="UTF-8">' +
+  '	<title></title>' +
+  '</head>' +
+  '<body>' +
+  '' +
+  '</body>' +
+  '</html>'
+);
 
 function expandHandler(pattern) {
   let out = null;
