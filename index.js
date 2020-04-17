@@ -8,6 +8,9 @@ function fragmentTemplateHandler(pattern) {
   if (pattern.indexOf('.') > -1) {
     let fragment = pattern.split('.');
     out = `<${fragment[0]} class="${fragment[1]}"></${fragment[0]}>`;
+  } if (pattern.indexOf('#') > -1) {
+    let fragment = pattern.split('#');
+    out = `<${fragment[0]} id="${fragment[1]}"></${fragment[0]}>`;
   }
   return out;
 }
@@ -32,3 +35,15 @@ assert.equal(expandHandler('p+p'), '<p></p><p></p>');
 assert.equal(expandHandler('p*3'), '<p></p><p></p><p></p>');
 
 assert.equal(expandHandler('p.text-align'), '<p class="text-align"></p>');
+assert.equal(
+  expandHandler('p.text-align+p.text-wrapper'),
+  '<p class="text-align"></p><p class="text-wrapper"></p>'
+);
+assert.equal(
+  expandHandler('p.text-wrapper*3'),
+  '<p class="text-wrapper"></p>' +
+  '<p class="text-wrapper"></p>' +
+  '<p class="text-wrapper"></p>'
+);
+
+assert.equal(expandHandler('p#first-paragraph'), '<p id="first-paragraph"></p>');
