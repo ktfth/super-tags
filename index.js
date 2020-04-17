@@ -55,22 +55,30 @@ assert.equal(
 
 function expandHandler(pattern, value='') {
   let out = null;
-  if (pattern.indexOf('>') > -1) {
+  if (pattern !== undefined && pattern.indexOf('>') > -1) {
     let fragments = pattern.split('>');
     out = '$template$';
     fragments.forEach((v, i) => {
       let replacer = '$template$';
+      let curr = null;
       if (i === fragments.length - 1) replacer = '';
       if (v.indexOf('+') > -1 || v.indexOf('*') > -1) {
-        v = expandHandler(v, value);
+        if (fragments[i + 1] !== undefined) {
+          curr = expandHandler(fragments[i + 1], value);
+          v = expandHandler(v, '$template$');
+          v = v.replace('$template$', expandHandler(fragments[i + 1], value));
+        } else {
+          v = expandHandler(v, value);
+        }
+        v = v.replace('$template$', curr);
         out = out.replace('$template$', v);
       } else {
         out = out.replace('$template$', fragmentTemplateHandler(v, replacer));
       }
     });
-  } else if (pattern.indexOf('+') > -1) {
+  } else if (pattern !== undefined && pattern.indexOf('+') > -1) {
     out = pattern.split('+').map(v => fragmentTemplateHandler(v, value)).join('');
-  } else if (pattern.indexOf('*') > -1) {
+  } else if (pattern !== undefined && pattern.indexOf('*') > -1) {
     let fragment = pattern.split('*');
     out = (new Array(parseInt(fragment[1], 10)))
             .fill(fragmentTemplateHandler(fragment[0], value))
@@ -138,6 +146,27 @@ assert.equal(
 assert.equal(
   expandHandler('p>a*3'),
   '<p><a></a><a></a><a></a></p>'
+);
+
+function highLevelExpansionHandler(pattern) {
+  let out = null;
+  if (pattern !== undefined && pattern.indexOf('+')) {
+    out = pattern.split('+').map(v => expandHandler(v)).join('');
+  }
+  return out;
+}
+root.highLevelExpansion = highLevelExpansionHandler;
+assert.equal(
+  highLevelExpansionHandler('p>a+article>section'),
+  '<p><a></a></p><article><section></section></article>'
+);
+assert.equal(
+  highLevelExpansionHandler('p*3>a'),
+  '<p><a></a></p><p><a></a></p><p><a></a></p>'
+);
+assert.equal(
+  highLevelExpansionHandler('p*3>a+p>span'),
+  '<p><a></a></p><p><a></a></p><p><a></a></p><p><span></span></p>'
 );
 
 let args = process.argv.slice(2);
