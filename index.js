@@ -4,15 +4,15 @@ const root = this;
 const assert = require('assert');
 
 function html5Template() {
-  return '<!DOCTYPE HTML>' +
-         '<html lang="en">' +
-         '<head>' +
-         '	<meta charset="UTF-8">' +
-         '	<title></title>' +
-         '</head>' +
-         '<body>' +
-         '' +
-         '</body>' +
+  return '<!DOCTYPE HTML>\n' +
+         '<html lang="en">\n' +
+         '<head>\n' +
+         '	<meta charset="UTF-8">\n' +
+         '	<title></title>\n' +
+         '</head>\n' +
+         '<body>\n' +
+         '\n' +
+         '</body>\n' +
          '</html>';
 }
 

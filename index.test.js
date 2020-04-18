@@ -11,15 +11,15 @@ describe('Fragment template', () => {
   it('should produce html 5 markup', () => {
     assert.equal(
       lib.fragmentTemplate('html:5'),
-      '<!DOCTYPE HTML>' +
-      '<html lang="en">' +
-      '<head>' +
-      '	<meta charset="UTF-8">' +
-      '	<title></title>' +
-      '</head>' +
-      '<body>' +
-      '' +
-      '</body>' +
+      '<!DOCTYPE HTML>\n' +
+      '<html lang="en">\n' +
+      '<head>\n' +
+      '	<meta charset="UTF-8">\n' +
+      '	<title></title>\n' +
+      '</head>\n' +
+      '<body>\n' +
+      '\n' +
+      '</body>\n' +
       '</html>'
     );
   });
