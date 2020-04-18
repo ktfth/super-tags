@@ -38,20 +38,7 @@ function fragmentTemplateHandler(pattern, value='') {
   }
   return out;
 }
-assert.equal(fragmentTemplateHandler('p'), '<p></p>');
-assert.equal(
-  fragmentTemplateHandler('html:5'),
-  '<!DOCTYPE HTML>' +
-  '<html lang="en">' +
-  '<head>' +
-  '	<meta charset="UTF-8">' +
-  '	<title></title>' +
-  '</head>' +
-  '<body>' +
-  '' +
-  '</body>' +
-  '</html>'
-);
+root.fragmentTemplate = fragmentTemplateHandler;
 
 function expandHandler(pattern, value='') {
   let out = null;
@@ -168,7 +155,3 @@ assert.equal(
   highLevelExpansionHandler('p*3>a+p>span'),
   '<p><a></a></p><p><a></a></p><p><a></a></p><p><span></span></p>'
 );
-
-let args = process.argv.slice(2);
-
-console.log(highLevelExpansionHandler(args[0]));
