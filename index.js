@@ -34,7 +34,7 @@ function fragmentTemplateHandler(pattern, value='') {
     let fragment = pattern.split('#');
     out = `<${fragment[0]} id="${fragment[1]}">${value}</${fragment[0]}>`;
   } else if (pattern) {
-    out = `<${pattern}>${value}</${pattern}>`
+    out = `<${pattern}>\n${value}\n</${pattern}>`
   }
   return out;
 }

@@ -5,7 +5,7 @@ const assert = require('assert');
 
 describe('Fragment template', () => {
   it('should produce a tag', () => {
-    assert.equal(lib.fragmentTemplate('p'), '<p></p>');
+    assert.equal(lib.fragmentTemplate('p'), '<p>\n\n</p>');
   });
 
   it('should produce html 5 markup', () => {
@@ -27,15 +27,15 @@ describe('Fragment template', () => {
 
 describe('Expand', () => {
   it('should produce a tag', () => {
-    assert.equal(lib.expand('p'), '<p></p>');
+    assert.equal(lib.expand('p'), '<p>\n\n</p>');
   });
 
   it('should produce two tags expressed on the pattern', () => {
-    assert.equal(lib.expand('p+p'), '<p></p><p></p>');
+    assert.equal(lib.expand('p+p'), '<p>\n\n</p><p>\n\n</p>');
   });
 
   it('should produce three tags expresse on the pattern', () => {
-    assert.equal(lib.expand('p*3'), '<p></p><p></p><p></p>');
+    assert.equal(lib.expand('p*3'), '<p>\n\n</p><p>\n\n</p><p>\n\n</p>');
   });
 
   it('should produce a tag with class', () => {
@@ -89,32 +89,32 @@ describe('Expand', () => {
   it('should produce a tag inside of another of 2', () => {
     assert.equal(
       lib.expand('p>a'),
-      '<p><a></a></p>'
+      '<p>\n<a>\n\n</a>\n</p>'
     );
   });
 
   it('should produce a markup from a deep pattern of 3', () => {
-    assert.equal(lib.expand('p>a>span'), '<p><a><span></span></a></p>');
+    assert.equal(lib.expand('p>a>span'), '<p>\n<a>\n<span>\n\n</span>\n</a>\n</p>');
   });
 
   it('should produce a markup from a deep pattern of 4', () => {
     assert.equal(
       lib.expand('p>a>span>b'),
-      '<p><a><span><b></b></span></a></p>'
+      '<p>\n<a>\n<span>\n<b>\n\n</b>\n</span>\n</a>\n</p>'
     );
   });
 
   it('should produce a deep markup with two tags inside of child', () => {
     assert.equal(
       lib.expand('p>a+span'),
-      '<p><a></a><span></span></p>'
+      '<p>\n<a>\n\n</a><span>\n\n</span>\n</p>'
     );
   });
 
   it('should produce a deep markup with three tags inside of child', () => {
     assert.equal(
       lib.expand('p>a*3'),
-      '<p><a></a><a></a><a></a></p>'
+      '<p>\n<a>\n\n</a><a>\n\n</a><a>\n\n</a>\n</p>'
     );
   });
 });
@@ -123,21 +123,21 @@ describe('High Level Expansion', () => {
   it('should produce a markup from a complex pattern 1', () => {
     assert.equal(
       lib.highLevelExpansion('p>a+article>section'),
-      '<p><a></a></p><article><section></section></article>'
+      '<p>\n<a>\n\n</a>\n</p><article>\n<section>\n\n</section>\n</article>'
     );
   });
 
   it('should produce a markup from a complex pattern 2', () => {
     assert.equal(
       lib.highLevelExpansion('p*3>a'),
-      '<p><a></a></p><p><a></a></p><p><a></a></p>'
+      '<p>\n<a>\n\n</a>\n</p><p>\n<a>\n\n</a>\n</p><p>\n<a>\n\n</a>\n</p>'
     );
   });
 
   it('should produce a markup from a complex pattern 3', () => {
     assert.equal(
       lib.highLevelExpansion('p*3>a+p>span'),
-      '<p><a></a></p><p><a></a></p><p><a></a></p><p><span></span></p>'
+      '<p>\n<a>\n\n</a>\n</p><p>\n<a>\n\n</a>\n</p><p>\n<a>\n\n</a>\n</p><p>\n<span>\n\n</span>\n</p>'
     );
   });
 });
