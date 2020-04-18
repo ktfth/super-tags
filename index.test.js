@@ -39,50 +39,50 @@ describe('Expand', () => {
   });
 
   it('should produce a tag with class', () => {
-    assert.equal(lib.expand('p.text-align'), '<p class="text-align"></p>');
+    assert.equal(lib.expand('p.text-align'), '<p class="text-align">\n\n</p>');
   });
 
   it('should produce two tags with class', () => {
     assert.equal(
       lib.expand('p.text-align+p.text-wrapper'),
-      '<p class="text-align"></p><p class="text-wrapper"></p>'
+      '<p class="text-align">\n\n</p><p class="text-wrapper">\n\n</p>'
     );
   });
 
   it('should produce three tags with class', () => {
     assert.equal(
       lib.expand('p.text-wrapper*3'),
-      '<p class="text-wrapper"></p>' +
-      '<p class="text-wrapper"></p>' +
-      '<p class="text-wrapper"></p>'
+      '<p class="text-wrapper">\n\n</p>' +
+      '<p class="text-wrapper">\n\n</p>' +
+      '<p class="text-wrapper">\n\n</p>'
     );
   });
 
   it('should produce a tag with id', () => {
-    assert.equal(lib.expand('p#first-paragraph'), '<p id="first-paragraph"></p>');
+    assert.equal(lib.expand('p#first-paragraph'), '<p id="first-paragraph">\n\n</p>');
   });
 
   it('should produce two tags with id', () => {
     assert.equal(
       lib.expand('p#spotted+p#first-paragraph'),
-      '<p id="spotted"></p>' +
-      '<p id="first-paragraph"></p>'
+      '<p id="spotted">\n\n</p>' +
+      '<p id="first-paragraph">\n\n</p>'
     );
   });
 
   it('should produce three tags with id and different numbers on there', () => {
     assert.equal(
       lib.expand('p#paragraph-$$*3'),
-      '<p id="paragraph-01"></p>' +
-      '<p id="paragraph-02"></p>' +
-      '<p id="paragraph-03"></p>'
+      '<p id="paragraph-01">\n\n</p>' +
+      '<p id="paragraph-02">\n\n</p>' +
+      '<p id="paragraph-03">\n\n</p>'
     );
   });
 
   it('should produce a tag with id and class', () => {
     assert.equal(
       lib.expand('p#first-paragraph.spotted'),
-      '<p id="first-paragraph" class="spotted"></p>'
+      '<p id="first-paragraph" class="spotted">\n\n</p>'
     );
   });
 

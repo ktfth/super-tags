@@ -25,14 +25,14 @@ function fragmentTemplateHandler(pattern, value='') {
     let fragment = pattern.split('#');
     let subFragment = fragment[1].split('.');
     out = `<${fragment[0]} id="${subFragment[0]}" class="${subFragment[1]}">` +
-          `${value}` +
+          `\n${value}\n` +
           `</${fragment[0]}>`;
   } else if (pattern !== undefined && pattern.indexOf('.') > -1) {
     let fragment = pattern.split('.');
-    out = `<${fragment[0]} class="${fragment[1]}">${value}</${fragment[0]}>`;
+    out = `<${fragment[0]} class="${fragment[1]}">\n${value}\n</${fragment[0]}>`;
   } else if (pattern !== undefined && pattern.indexOf('#') > -1) {
     let fragment = pattern.split('#');
-    out = `<${fragment[0]} id="${fragment[1]}">${value}</${fragment[0]}>`;
+    out = `<${fragment[0]} id="${fragment[1]}">\n${value}\n</${fragment[0]}>`;
   } else if (pattern) {
     out = `<${pattern}>\n${value}\n</${pattern}>`
   }
