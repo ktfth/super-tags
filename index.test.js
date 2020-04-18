@@ -118,3 +118,26 @@ describe('Expand', () => {
     );
   });
 });
+
+describe('High Level Expansion', () => {
+  it('should produce a markup from a complex pattern 1', () => {
+    assert.equal(
+      lib.highLevelExpansion('p>a+article>section'),
+      '<p><a></a></p><article><section></section></article>'
+    );
+  });
+
+  it('should produce a markup from a complex pattern 2', () => {
+    assert.equal(
+      lib.highLevelExpansion('p*3>a'),
+      '<p><a></a></p><p><a></a></p><p><a></a></p>'
+    );
+  });
+
+  it('should produce a markup from a complex pattern 3', () => {
+    assert.equal(
+      lib.highLevelExpansion('p*3>a+p>span'),
+      '<p><a></a></p><p><a></a></p><p><a></a></p><p><span></span></p>'
+    );
+  });
+});

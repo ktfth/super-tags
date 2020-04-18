@@ -92,15 +92,3 @@ function highLevelExpansionHandler(pattern) {
   return out;
 }
 root.highLevelExpansion = highLevelExpansionHandler;
-assert.equal(
-  highLevelExpansionHandler('p>a+article>section'),
-  '<p><a></a></p><article><section></section></article>'
-);
-assert.equal(
-  highLevelExpansionHandler('p*3>a'),
-  '<p><a></a></p><p><a></a></p><p><a></a></p>'
-);
-assert.equal(
-  highLevelExpansionHandler('p*3>a+p>span'),
-  '<p><a></a></p><p><a></a></p><p><a></a></p><p><span></span></p>'
-);
