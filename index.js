@@ -83,57 +83,6 @@ function expandHandler(pattern, value='') {
   return out;
 }
 root.expand = expandHandler;
-assert.equal(expandHandler('p'), '<p></p>');
-assert.equal(expandHandler('p+p'), '<p></p><p></p>');
-assert.equal(expandHandler('p*3'), '<p></p><p></p><p></p>');
-
-assert.equal(expandHandler('p.text-align'), '<p class="text-align"></p>');
-assert.equal(
-  expandHandler('p.text-align+p.text-wrapper'),
-  '<p class="text-align"></p><p class="text-wrapper"></p>'
-);
-assert.equal(
-  expandHandler('p.text-wrapper*3'),
-  '<p class="text-wrapper"></p>' +
-  '<p class="text-wrapper"></p>' +
-  '<p class="text-wrapper"></p>'
-);
-
-assert.equal(expandHandler('p#first-paragraph'), '<p id="first-paragraph"></p>');
-assert.equal(
-  expandHandler('p#spotted+p#first-paragraph'),
-  '<p id="spotted"></p>' +
-  '<p id="first-paragraph"></p>'
-);
-assert.equal(
-  expandHandler('p#paragraph-$$*3'),
-  '<p id="paragraph-01"></p>' +
-  '<p id="paragraph-02"></p>' +
-  '<p id="paragraph-03"></p>'
-);
-
-assert.equal(
-  expandHandler('p#first-paragraph.spotted'),
-  '<p id="first-paragraph" class="spotted"></p>'
-);
-
-assert.equal(
-  expandHandler('p>a'),
-  '<p><a></a></p>'
-);
-assert.equal(expandHandler('p>a>span'), '<p><a><span></span></a></p>');
-assert.equal(
-  expandHandler('p>a>span>b'),
-  '<p><a><span><b></b></span></a></p>'
-);
-assert.equal(
-  expandHandler('p>a+span'),
-  '<p><a></a><span></span></p>'
-);
-assert.equal(
-  expandHandler('p>a*3'),
-  '<p><a></a><a></a><a></a></p>'
-);
 
 function highLevelExpansionHandler(pattern) {
   let out = null;
