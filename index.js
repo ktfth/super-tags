@@ -64,7 +64,7 @@ function expandHandler(pattern, value='') {
       }
     });
   } else if (pattern !== undefined && pattern.indexOf('+') > -1) {
-    out = pattern.split('+').map(v => fragmentTemplateHandler(v, value)).join('');
+    out = pattern.split('+').map(v => fragmentTemplateHandler(v, value)).join('\n');
   } else if (pattern !== undefined && pattern.indexOf('*') > -1) {
     let fragment = pattern.split('*');
     out = (new Array(parseInt(fragment[1], 10)))
@@ -76,7 +76,7 @@ function expandHandler(pattern, value='') {
 
               return v;
             })
-            .join('');
+            .join('\n');
   } else {
     out = fragmentTemplateHandler(pattern, value);
   }
