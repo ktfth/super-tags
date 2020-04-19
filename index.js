@@ -62,19 +62,24 @@ function fragmentTemplateHandler(pattern, value='') {
 }
 root.fragmentTemplate = fragmentTemplateHandler;
 
+function hasMultSymbol(p) { return hasPattern(p) && p.indexOf('*') > -1; }
+function hasMergeSymbol(p) { return hasPattern(p) && p.indexOf('+') > -1; }
+
+const TEMPLATE = '$template$';
+
 function expandHandler(pattern, value='') {
   let out = null;
   if (pattern !== undefined && pattern.indexOf('>') > -1) {
     let fragments = pattern.split('>');
-    out = '$template$';
+    out = TEMPLATE;
     fragments.forEach((v, i) => {
       let replacer = '$template$';
       let curr = null;
       if (i === fragments.length - 1) replacer = '';
-      if (v.indexOf('+') > -1 || v.indexOf('*') > -1) {
+      if (hasMergeSymbol(v) || hasMultSymbol(v)) {
         if (fragments[i + 1] !== undefined) {
           curr = expandHandler(fragments[i + 1], value);
-          v = expandHandler(v, '$template$');
+          v = expandHandler(v, TEMPLATE);
           v = v.replace('$template$', expandHandler(fragments[i + 1], value));
         } else {
           v = expandHandler(v, value);
@@ -85,9 +90,9 @@ function expandHandler(pattern, value='') {
         out = out.replace('$template$', fragmentTemplateHandler(v, replacer));
       }
     });
-  } else if (pattern !== undefined && pattern.indexOf('+') > -1) {
+  } else if (hasMergeSymbol(pattern)) {
     out = pattern.split('+').map(v => fragmentTemplateHandler(v, value)).join('\n');
-  } else if (pattern !== undefined && pattern.indexOf('*') > -1) {
+  } else if (hasMultSymbol(pattern)) {
     let fragment = pattern.split('*');
     out = (new Array(parseInt(fragment[1], 10)))
             .fill(fragmentTemplateHandler(fragment[0], value))
@@ -108,8 +113,10 @@ root.expand = expandHandler;
 
 function highLevelExpansionHandler(pattern) {
   let out = null;
-  if (pattern !== undefined && pattern.indexOf('+')) {
+  if (hasMergeSymbol(pattern)) {
     out = pattern.split('+').map(v => expandHandler(v)).join('');
+  } else {
+    out = expandHandler(pattern);
   }
   return out;
 }
