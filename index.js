@@ -98,14 +98,16 @@ function expandHandler(pattern, value='') {
         if (fragments[i + 1] !== undefined) {
           curr = expandHandler(fragments[i + 1], value);
           v = expandHandler(v, TEMPLATE);
-          v = v.replace('$template$', expandHandler(fragments[i + 1], value));
+          v = v.replace('$template$', '\xa0\xa0' + expandHandler(fragments[i + 1], value));
         } else {
-          v = expandHandler(v, value);
+          v = expandHandler(v, '\xa0\xa0' + value);
         }
-        v = v.replace('$template$', curr);
+        v = v.replace('$template$', '\xa0\xa0' + curr);
         out = out.replace('$template$', v);
+      } else if (i > 0) {
+        out = out.replace('$template$', '\xa0\xa0' + expandHandler(v, replacer));
       } else {
-        out = out.replace('$template$', fragmentTemplateHandler(v, replacer));
+        out = out.replace('$template$', expandHandler(v, replacer));
       }
     });
   } else if (hasMergeSymbol(pattern)) {
