@@ -3,6 +3,8 @@
 const root = this;
 const assert = require('assert');
 
+const HTML5 = 'html:5';
+
 function html5Template() {
   return '<!DOCTYPE HTML>\n' +
          '<html lang="en">\n' +
@@ -16,25 +18,45 @@ function html5Template() {
          '</html>';
 }
 
+function hasPattern(p) { return p !== undefined; }
+function hasPatternId(p) { return hasPattern(p) && p.indexOf('#') > -1; }
+function hasPatternClass(p) { return hasPattern(p) && p.indexOf('.') > -1; }
+
+function fullTemplate(tag='', idProp='', classProp='', value='') {
+  return `<${tag} id="${idProp}" class="${classProp}">` +
+         `\n${value}\n` +
+         `</${tag}>`
+}
+
+function classTemplate(tag='', classProp='', value='') {
+  return `<${tag} class="${classProp}">\n${value}\n</${tag}>`;
+}
+
+function idTemplate(tag='', idProp='', value='') {
+  return `<${tag} id="${idProp}">\n${value}\n</${tag}>`;
+}
+
+function minimalTemplate(tag='', value='') {
+  return `<${tag}>\n${value}\n</${tag}>`;
+}
+
 function fragmentTemplateHandler(pattern, value='') {
   let out = '';
   let fragment = [];
-  if (pattern === 'html:5') {
+  if (pattern === HTML5) {
     out = html5Template();
-  } else if (pattern !== undefined && pattern.indexOf('#') > -1 && pattern.indexOf('.') > -1) {
+  } else if (hasPatternId(pattern) && hasPatternClass(pattern)) {
     let fragment = pattern.split('#');
     let subFragment = fragment[1].split('.');
-    out = `<${fragment[0]} id="${subFragment[0]}" class="${subFragment[1]}">` +
-          `\n${value}\n` +
-          `</${fragment[0]}>`;
-  } else if (pattern !== undefined && pattern.indexOf('.') > -1) {
+    out = fullTemplate(fragment[0], subFragment[0], subFragment[1], value);
+  } else if (hasPatternClass(pattern)) {
     let fragment = pattern.split('.');
-    out = `<${fragment[0]} class="${fragment[1]}">\n${value}\n</${fragment[0]}>`;
-  } else if (pattern !== undefined && pattern.indexOf('#') > -1) {
+    out = classTemplate(fragment[0], fragment[1], value);
+  } else if (hasPatternId(pattern)) {
     let fragment = pattern.split('#');
-    out = `<${fragment[0]} id="${fragment[1]}">\n${value}\n</${fragment[0]}>`;
+    out = idTemplate(fragment[0], fragment[1], value);
   } else if (pattern) {
-    out = `<${pattern}>\n${value}\n</${pattern}>`
+    out = minimalTemplate(pattern, value);
   }
   return out;
 }
@@ -92,3 +114,8 @@ function highLevelExpansionHandler(pattern) {
   return out;
 }
 root.highLevelExpansion = highLevelExpansionHandler;
+
+if (!module.parent) {
+  let args = process.argv.slice(2);
+  console.log(highLevelExpansionHandler(args[0] || ''));
+}
