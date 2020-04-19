@@ -22,10 +22,10 @@ function hasPattern(p) { return p !== undefined; }
 function hasPatternId(p) { return hasPattern(p) && p.indexOf('#') > -1; }
 function hasPatternClass(p) { return hasPattern(p) && p.indexOf('.') > -1; }
 
-function fullTemplate(tag='', idProp='', classProp='', value='') {
+function fullTemplate(tag='', idProp='', classProp='', value='', identation='') {
   if (value) {
     return `<${tag} id="${idProp}" class="${classProp}">` +
-           `\n${value}\n` +
+           `\n${value}\n${identation}` +
            `</${tag}>`;
   } else {
     return `<${tag} id="${idProp}" class="${classProp}">` +
@@ -34,31 +34,31 @@ function fullTemplate(tag='', idProp='', classProp='', value='') {
   }
 }
 
-function classTemplate(tag='', classProp='', value='') {
+function classTemplate(tag='', classProp='', value='', identation='') {
   if (value) {
-    return `<${tag} class="${classProp}">\n${value}\n</${tag}>`;
+    return `<${tag} class="${classProp}">\n${value}\n${identation}</${tag}>`;
   } else {
     return `<${tag} class="${classProp}"></${tag}>`;
   }
 }
 
-function idTemplate(tag='', idProp='', value='') {
+function idTemplate(tag='', idProp='', value='', identation='') {
   if (value) {
-    return `<${tag} id="${idProp}">\n${value}\n</${tag}>`;
+    return `<${tag} id="${idProp}">\n${value}\n${identation}</${tag}>`;
   } else {
     return `<${tag} id="${idProp}"></${tag}>`;
   }
 }
 
-function minimalTemplate(tag='', value='') {
+function minimalTemplate(tag='', value='', identation='') {
   if (value) {
-    return `<${tag}>\n${value}\n</${tag}>`;
+    return `<${tag}>\n${value}\n${identation}</${tag}>`;
   } else {
     return `<${tag}></${tag}>`;
   }
 }
 
-function fragmentTemplateHandler(pattern, value='') {
+function fragmentTemplateHandler(pattern, value='', identation='') {
   let out = '';
   let fragment = [];
   if (pattern === HTML5) {
@@ -66,15 +66,15 @@ function fragmentTemplateHandler(pattern, value='') {
   } else if (hasPatternId(pattern) && hasPatternClass(pattern)) {
     let fragment = pattern.split('#');
     let subFragment = fragment[1].split('.');
-    out = fullTemplate(fragment[0], subFragment[0], subFragment[1], value);
+    out = fullTemplate(fragment[0], subFragment[0], subFragment[1], value, identation);
   } else if (hasPatternClass(pattern)) {
     let fragment = pattern.split('.');
-    out = classTemplate(fragment[0], fragment[1], value);
+    out = classTemplate(fragment[0], fragment[1], value, identation);
   } else if (hasPatternId(pattern)) {
     let fragment = pattern.split('#');
-    out = idTemplate(fragment[0], fragment[1], value);
+    out = idTemplate(fragment[0], fragment[1], value, identation);
   } else if (pattern) {
-    out = minimalTemplate(pattern, value);
+    out = minimalTemplate(pattern, value, identation);
   }
   return out;
 }
@@ -85,7 +85,7 @@ function hasMergeSymbol(p) { return hasPattern(p) && p.indexOf('+') > -1; }
 
 const TEMPLATE = '$template$';
 
-function expandHandler(pattern, value='') {
+function expandHandler(pattern, value='', identation='') {
   let out = null;
   if (pattern !== undefined && pattern.indexOf('>') > -1) {
     let fragments = pattern.split('>');
@@ -93,21 +93,24 @@ function expandHandler(pattern, value='') {
     fragments.forEach((v, i) => {
       let replacer = '$template$';
       let curr = null;
-      if (i === fragments.length - 1) replacer = '';
+      let identation = i > 0 ? new Array(i).fill('\xa0\xa0').join('') : ''
+      if (i === fragments.length - 1) {
+        replacer = '';
+      }
       if (hasMergeSymbol(v) || hasMultSymbol(v)) {
         if (fragments[i + 1] !== undefined) {
-          curr = expandHandler(fragments[i + 1], value);
+          curr = expandHandler(fragments[i + 1], identation + value + identation, identation);
           v = expandHandler(v, TEMPLATE);
-          v = v.replace('$template$', '\xa0\xa0' + expandHandler(fragments[i + 1], value));
+          v = v.replace('$template$', identation + expandHandler(fragments[i + 1], value, identation)) + identation;
         } else {
-          v = expandHandler(v, '\xa0\xa0' + value);
+          v = expandHandler(v, identation + value + identation, identation);
         }
-        v = v.replace('$template$', '\xa0\xa0' + curr);
+        v = v.replace('$template$', identation + curr + identation);
         out = out.replace('$template$', v);
       } else if (i > 0) {
-        out = out.replace('$template$', '\xa0\xa0' + expandHandler(v, replacer));
+        out = out.replace('$template$', identation + expandHandler(v, replacer, identation, (i === fragments.length - 1)) + identation);
       } else {
-        out = out.replace('$template$', expandHandler(v, replacer));
+        out = out.replace('$template$', expandHandler(v, replacer, identation));
       }
     });
   } else if (hasMergeSymbol(pattern)) {
@@ -125,7 +128,7 @@ function expandHandler(pattern, value='') {
             })
             .join('\n');
   } else {
-    out = fragmentTemplateHandler(pattern, value);
+    out = fragmentTemplateHandler(pattern, value, identation);
   }
   return out;
 }
