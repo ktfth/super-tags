@@ -23,21 +23,39 @@ function hasPatternId(p) { return hasPattern(p) && p.indexOf('#') > -1; }
 function hasPatternClass(p) { return hasPattern(p) && p.indexOf('.') > -1; }
 
 function fullTemplate(tag='', idProp='', classProp='', value='') {
-  return `<${tag} id="${idProp}" class="${classProp}">` +
-         `\n${value}\n` +
-         `</${tag}>`
+  if (value) {
+    return `<${tag} id="${idProp}" class="${classProp}">` +
+           `\n${value}\n` +
+           `</${tag}>`;
+  } else {
+    return `<${tag} id="${idProp}" class="${classProp}">` +
+           `` +
+           `</${tag}>`;
+  }
 }
 
 function classTemplate(tag='', classProp='', value='') {
-  return `<${tag} class="${classProp}">\n${value}\n</${tag}>`;
+  if (value) {
+    return `<${tag} class="${classProp}">\n${value}\n</${tag}>`;
+  } else {
+    return `<${tag} class="${classProp}"></${tag}>`;
+  }
 }
 
 function idTemplate(tag='', idProp='', value='') {
-  return `<${tag} id="${idProp}">\n${value}\n</${tag}>`;
+  if (value) {
+    return `<${tag} id="${idProp}">\n${value}\n</${tag}>`;
+  } else {
+    return `<${tag} id="${idProp}"></${tag}>`;
+  }
 }
 
 function minimalTemplate(tag='', value='') {
-  return `<${tag}>\n${value}\n</${tag}>`;
+  if (value) {
+    return `<${tag}>\n${value}\n</${tag}>`;
+  } else {
+    return `<${tag}></${tag}>`;
+  }
 }
 
 function fragmentTemplateHandler(pattern, value='') {
