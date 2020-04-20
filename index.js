@@ -4,8 +4,18 @@ const root = this;
 
 function expandAbbreviationHandler(p='', v='') {
   let attr = expandAttributeHandler(p).trim();
-  if (isClassAttr(p)) p = p.split('.')[0] + ' ';
-  if (isIdAttr(p)) p = p.split('#')[0] + ' ';
+  if (isIdAttr(p) && isClassAttr(p)) {
+    let classFragment = p.slice(p.indexOf('.'), p.length);
+    attr = expandAttributeHandler(p.replace(classFragment, '')).trim() +
+           ' ' +
+           attr;
+    let skip = p.slice(p.indexOf('#'), p.length);
+    p = p.replace(skip, ' ');
+  } else if (isClassAttr(p)) {
+    p = p.split('.')[0] + ' ';
+  } else if (isIdAttr(p)) {
+    p = p.split('#')[0] + ' ';
+  }
   attr = attr.replace(p, '');
   if (v) return `<${p}${attr}>\n\xa0\xa0${v}\n</${p.replace(' ', '')}>`;
   return `<${p}${attr}></${p.replace(' ', '')}>`;
@@ -15,7 +25,12 @@ root.expandAbbreviation = expandAbbreviationHandler;
 function isClassAttr(v='') { return v.indexOf('.') > -1; }
 
 function produceClass(v='') {
-  let g = v.split('.').filter(v => v !== '').join(' ').trim();
+  let g = v.split('.').filter(v => v !== '');
+  if (v.indexOf('.') === 0) {
+    g = g.join(' ').trim();
+  } if (v.indexOf('.') > 0) {
+    g = [g[1]].join(' ').trim();
+  }
   return `class="${g}"`;
 }
 
