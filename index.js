@@ -19,7 +19,7 @@ function isIdAttr(v='') { return v.indexOf('#') > -1; }
 
 function produceId(v='') {
   let out = '';
-  let g = v.split('#').filter(v => v !== '');
+  let g = v.split('#').filter(v => v !== '').slice(0, 1);
   if (g.length === 1) {
     g = g.join(' ').trim();
     out = `id="${g}"`;

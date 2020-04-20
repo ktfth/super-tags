@@ -31,4 +31,8 @@ describe('Abbreviation', () => {
   it('should be expand id attribute', () => {
     assert.equal(lib.expandAttribute('#some-id'), 'id="some-id"');
   });
+
+  it('should be expand one id attribute', () => {
+    assert.equal(lib.expandAttribute('#some-id#lock'), 'id="some-id"');
+  });
 });
