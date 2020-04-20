@@ -115,4 +115,11 @@ describe('Operations', () => {
       '<div></div><div></div><p></p>'
     );
   });
+
+  it('should be multiple tags', () => {
+    assert.equal(
+      lib.expandOperation('div*3'),
+      '<div></div><div></div><div></div>'
+    );
+  });
 });

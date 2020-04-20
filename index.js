@@ -107,6 +107,12 @@ function expandOperationHandler(p='', value='') {
              .map(v => expandAbbreviationHandler(v, value))
              .join('');
     out = g;
+  } else if (p.indexOf('*') > -1) {
+    let g = p.split('*');
+    g = (new Array(parseInt(g[1], 10)))
+          .fill(expandAbbreviationHandler(g[0]))
+          .join('');
+    out = g;
   }
   return out;
 }
