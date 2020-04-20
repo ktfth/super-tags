@@ -122,4 +122,11 @@ describe('Operations', () => {
       '<div></div><div></div><div></div>'
     );
   });
+
+  it('should be combine both operations', () => {
+    assert.equal(
+      lib.expandOperation('div*3+div*3'),
+      '<div></div><div></div><div></div><div></div><div></div><div></div>'
+    );
+  });
 });

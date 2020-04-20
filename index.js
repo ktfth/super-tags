@@ -104,7 +104,13 @@ function expandOperationHandler(p='', value='') {
   if (p.indexOf('+') > -1) {
     let g = p.split('+')
              .filter(v => v !== '')
-             .map(v => expandAbbreviationHandler(v, value))
+             .map(v => {
+               if (v.indexOf('*') > -1) return expandOperationHandler(v, value);
+               return expandAbbreviationHandler(
+                 v,
+                 value
+               );
+             })
              .join('');
     out = g;
   } else if (p.indexOf('*') > -1) {
