@@ -2,7 +2,7 @@
 
 const root = this;
 
-function expandAbbreviationHandler(p='', v='') {
+function expandAbbreviationHandler(p='', v='', indentation='\xa0\xa0') {
   let attr = expandAttributeHandler(p).trim();
 
   if ((isIdAttr(p) || isClassAttr(p)) && isAttr(p)) {
@@ -36,7 +36,7 @@ function expandAbbreviationHandler(p='', v='') {
     p = p.split('#')[0] + ' ';
   }
   attr = attr.replace(p, '');
-  if (v) return `<${p}${attr}>\n\xa0\xa0${v}\n</${p.replace(' ', '')}>`;
+  if (v) return `<${p}${attr}>\n${indentation}${v}${indentation}\n</${p.replace(' ', '')}>`;
   return `<${p}${attr}></${p.replace(' ', '')}>`;
 }
 root.expandAbbreviation = expandAbbreviationHandler;
@@ -99,7 +99,7 @@ function expandAttributeHandler(a) {
 }
 root.expandAttribute = expandAttributeHandler;
 
-function expandOperationHandler(p='', value='') {
+function expandOperationHandler(p='', value='', indentation='') {
   let out = '';
   if (p.indexOf('+') > -1) {
     let g = p.split('+')
@@ -108,7 +108,8 @@ function expandOperationHandler(p='', value='') {
                if (v.indexOf('*') > -1) return expandOperationHandler(v, value);
                return expandAbbreviationHandler(
                  v,
-                 value
+                 value,
+                 indentation
                );
              })
              .join('');
@@ -116,11 +117,11 @@ function expandOperationHandler(p='', value='') {
   } else if (p.indexOf('*') > -1) {
     let g = p.split('*');
     g = (new Array(parseInt(g[1], 10)))
-          .fill(expandAbbreviationHandler(g[0]))
+          .fill(expandAbbreviationHandler(g[0], value, indentation))
           .join('');
     out = g;
   } else {
-    out = expandAbbreviationHandler(p, value);
+    out = expandAbbreviationHandler(p, value, indentation);
   }
   return out;
 }
@@ -138,16 +139,14 @@ function expandNestHandler(p='', value='') {
       if (i === g.length - 1) {
         replacer = '';
       } if (g[i + 1] !== undefined) {
-        curr = expandOperationHandler(g[i + 1], indentation + value + indentation, indentation);
         v = expandOperationHandler(v, '$template$');
-        v = v.replace('$template$', indentation + expandOperationHandler(g[i + 1], indentation + value + indentation, indentation)) + indentation;
-      } else if (i > 0) {
-        out = out.replace('$template$', indentation + expandOperationHandler(v, replacer, indentation) + indentation);
+        curr = expandOperationHandler(g[i + 1], value, indentation);
+        v = v.replace('$template$', indentation + '$template$' + indentation);
+      } if (!/<[^>]*>/.test(v)) {
+        out = out.replace('$template$', expandOperationHandler(v, value, indentation));
       } else {
-        out = out.replace('$template$', expandOperationHandler(v, replacer, indentation));
+        out = out.replace('$template$', v);
       }
-      v = v.replace('$template$', indentation + curr + indentation);
-      out = out.replace('$template$', v);
     });
   }
   return out;
