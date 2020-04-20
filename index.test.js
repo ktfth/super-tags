@@ -67,4 +67,11 @@ describe('Abbreviation', () => {
       '<div id="unique-id" class="some-class"></div>'
     );
   });
+
+  it('should be expand with class and id attribute', () => {
+    assert.equal(
+      lib.expandAbbreviation('div.some-class#unique-id'),
+      '<div class="some-class" id="unique-id"></div>'
+    );
+  });
 });

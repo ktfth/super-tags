@@ -4,12 +4,21 @@ const root = this;
 
 function expandAbbreviationHandler(p='', v='') {
   let attr = expandAttributeHandler(p).trim();
-  if (isIdAttr(p) && isClassAttr(p)) {
+  if (isIdAttr(p) && isClassAttr(p) && p.indexOf('#') < p.indexOf('.')) {
     let classFragment = p.slice(p.indexOf('.'), p.length);
     attr = expandAttributeHandler(p.replace(classFragment, '')).trim() +
            ' ' +
            attr;
     let skip = p.slice(p.indexOf('#'), p.length);
+    p = p.replace(skip, ' ');
+  } if (isIdAttr(p) && isClassAttr(p) && p.indexOf('#') > p.indexOf('.')) {
+    let idFragment = p.slice(p.indexOf('#'), p.length);
+    attr = expandAttributeHandler(idFragment);
+    let classFragment = p.slice(p.indexOf('.'), p.length);
+    attr = expandAttributeHandler(p.replace(idFragment, '')).trim() +
+           ' ' +
+           attr;
+    let skip = p.slice(p.indexOf('.'), p.length);
     p = p.replace(skip, ' ');
   } else if (isClassAttr(p)) {
     p = p.split('.')[0] + ' ';
@@ -63,7 +72,11 @@ function produceAttrs(v='') {
 
 function expandAttributeHandler(a) {
   let out = '';
-  if (isClassAttr(a)) {
+  if (isIdAttr(a) && isClassAttr(a) && a.indexOf('#') > a.indexOf('.')) {
+    out = produceClass(a);
+  } else if (isIdAttr(a) && isClassAttr(a) && a.indexOf('#') > a.indexOf('.')) {
+    out = produceId(a);
+  } else if (isClassAttr(a)) {
     out = produceClass(a);
   } else if (isIdAttr(a)) {
     out = produceId(a);
