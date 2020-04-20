@@ -105,7 +105,7 @@ function expandOperationHandler(p='', value='', indentation='') {
     let g = p.split('+')
              .filter(v => v !== '')
              .map(v => {
-               if (v.indexOf('*') > -1) return expandOperationHandler(v, value);
+               if (v.indexOf('*') > -1) return expandOperationHandler(v, value, indentation);
                return expandAbbreviationHandler(
                  v,
                  value,
@@ -139,9 +139,9 @@ function expandNestHandler(p='', value='') {
       if (i === g.length - 1) {
         replacer = '';
       } if (g[i + 1] !== undefined) {
-        v = expandOperationHandler(v, '$template$');
+        v = expandOperationHandler(v, '$template$', indentation);
         curr = expandOperationHandler(g[i + 1], value, indentation);
-        v = v.replace('$template$', indentation + '$template$' + indentation);
+        v = v.replace('$template$', '$template$');
       } if (!/<[^>]*>/.test(v)) {
         out = out.replace('$template$', expandOperationHandler(v, value, indentation));
       } else {
