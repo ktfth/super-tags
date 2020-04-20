@@ -3,8 +3,12 @@
 const root = this;
 
 function expandAbbreviationHandler(p='', v='') {
-  if (v) return `<${p}>\n\xa0\xa0${v}\n</${p}>`;
-  return `<${p}></${p}>`;
+  let attr = expandAttributeHandler(p).trim();
+  if (isClassAttr(p)) p = p.split('.')[0] + ' ';
+  if (isIdAttr(p)) p = p.split('#')[0] + ' ';
+  attr = attr.replace(p, '');
+  if (v) return `<${p}${attr}>\n\xa0\xa0${v}\n</${p.replace(' ', '')}>`;
+  return `<${p}${attr}></${p.replace(' ', '')}>`;
 }
 root.expandAbbreviation = expandAbbreviationHandler;
 
@@ -19,8 +23,12 @@ function isIdAttr(v='') { return v.indexOf('#') > -1; }
 
 function produceId(v='') {
   let out = '';
-  let g = v.split('#').filter(v => v !== '').slice(0, 1);
-  if (g.length === 1) {
+  let g = v.split('#').filter(v => v !== '');
+  if (v.indexOf('#') === 0) {
+    g = g.slice(0, 1);
+  } if (v.indexOf('#') > 0) {
+    g = [g[1]];
+  } if (g.length === 1) {
     g = g.join(' ').trim();
     out = `id="${g}"`;
   }

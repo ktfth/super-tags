@@ -36,10 +36,28 @@ describe('Abbreviation', () => {
     assert.equal(lib.expandAttribute('#some-id#lock'), 'id="some-id"');
   });
 
+  it('should be expand id attribute with other fragments', () => {
+    assert.equal(lib.expandAttribute('div#some-id'), 'id="some-id"');
+  });
+
   it('should be expand other attributes', () => {
     assert.equal(
       lib.expandAttribute('[data-first="first-example"]'),
       'data-first="first-example"'
+    );
+  });
+
+  it('should be expand with class attribute', () => {
+    assert.equal(
+      lib.expandAbbreviation('div.some-class'),
+      '<div class="some-class"></div>'
+    );
+  });
+
+  it('should be expand with id attribute', () => {
+    assert.equal(
+      lib.expandAbbreviation('div#unique-id'),
+      '<div id="unique-id"></div>'
     );
   });
 });
