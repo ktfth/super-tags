@@ -130,3 +130,19 @@ describe('Operations', () => {
     );
   });
 });
+
+describe('Nesting', () => {
+  it('should be nest a tag', () => {
+    assert.equal(
+      lib.expandNest('div>article'),
+      '<div>\n\xa0\xa0<article></article>\n</div>'
+    );
+  });
+
+  // it('should be nest a deep tag', () => {
+  //   assert.equal(
+  //     lib.expandNest('div>article>section'),
+  //     '<div>\n\xa0\xa0<article>\n\xa0\xa0<section></section>\n</article>\n</div>'
+  //   );
+  // });
+});

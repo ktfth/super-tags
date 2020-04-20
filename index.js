@@ -119,12 +119,42 @@ function expandOperationHandler(p='', value='') {
           .fill(expandAbbreviationHandler(g[0]))
           .join('');
     out = g;
+  } else {
+    out = expandAbbreviationHandler(p, value);
   }
   return out;
 }
 root.expandOperation = expandOperationHandler;
 
+function expandNestHandler(p='', value='') {
+  let out = '';
+  if (p.indexOf('>') > -1) {
+    let g = p.split('>');
+    out = '$template$';
+    g.forEach((v, i) => {
+      let replacer = '$template$';
+      let curr = null;
+      let indentation = i > 0 ? new Array(i).fill('\xa0\xa0').join('') : ''
+      if (i === g.length - 1) {
+        replacer = '';
+      } if (g[i + 1] !== undefined) {
+        curr = expandOperationHandler(g[i + 1], indentation + value + indentation, indentation);
+        v = expandOperationHandler(v, '$template$');
+        v = v.replace('$template$', indentation + expandOperationHandler(g[i + 1], indentation + value + indentation, indentation)) + indentation;
+      } else if (i > 0) {
+        out = out.replace('$template$', indentation + expandOperationHandler(v, replacer, indentation) + indentation);
+      } else {
+        out = out.replace('$template$', expandOperationHandler(v, replacer, indentation));
+      }
+      v = v.replace('$template$', indentation + curr + indentation);
+      out = out.replace('$template$', v);
+    });
+  }
+  return out;
+}
+root.expandNest = expandNestHandler;
+
 if (!module.parent) {
   let args = process.argv.slice(2);
-  console.log(expandAbbreviationHandler(args[0] || ''));
+  console.log(expandNestHandler(args[0] || ''));
 }
