@@ -101,14 +101,14 @@ function expandHandler(pattern, value='', identation='') {
         if (fragments[i + 1] !== undefined) {
           curr = expandHandler(fragments[i + 1], identation + value + identation, identation);
           v = expandHandler(v, TEMPLATE);
-          v = v.replace('$template$', identation + expandHandler(fragments[i + 1], value, identation)) + identation;
+          v = v.replace('$template$', identation + expandHandler(fragments[i + 1], identation + value + identation, identation)) + identation;
         } else {
           v = expandHandler(v, identation + value + identation, identation);
         }
         v = v.replace('$template$', identation + curr + identation);
         out = out.replace('$template$', v);
       } else if (i > 0) {
-        out = out.replace('$template$', identation + expandHandler(v, replacer, identation, (i === fragments.length - 1)) + identation);
+        out = out.replace('$template$', identation + expandHandler(v, replacer, identation) + identation);
       } else {
         out = out.replace('$template$', expandHandler(v, replacer, identation));
       }
