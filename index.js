@@ -98,3 +98,8 @@ function expandAttributeHandler(a) {
   return out;
 }
 root.expandAttribute = expandAttributeHandler;
+
+if (!module.parent) {
+  let args = process.argv.slice(2);
+  console.log(expandAbbreviationHandler(args[0] || ''));
+}
