@@ -4,7 +4,14 @@ const root = this;
 
 function expandAbbreviationHandler(p='', v='') {
   let attr = expandAttributeHandler(p).trim();
-  if (isAttr(p)) {
+
+  if (isClassAttr(p) && isAttr(p)) {
+    let attrFragment = p.slice(p.indexOf('['), p.indexOf(']') + 1);
+    p = p.replace(attrFragment, ' ');
+    attr = expandAttributeHandler(p).trim() +
+           ' ' +
+           attr;
+  } else if (isAttr(p)) {
     let attrFragment = p.slice(p.indexOf('['), p.indexOf(']') + 1);
     p = p.replace(attrFragment, ' ');
   } if (isIdAttr(p) && isClassAttr(p) && p.indexOf('#') < p.indexOf('.')) {
@@ -75,7 +82,9 @@ function produceAttrs(v='') {
 
 function expandAttributeHandler(a) {
   let out = '';
-  if (isIdAttr(a) && isClassAttr(a) && a.indexOf('#') > a.indexOf('.')) {
+  if (isClassAttr(a) && isAttr(a)) {
+    out = produceAttrs(a);
+  } else if (isIdAttr(a) && isClassAttr(a) && a.indexOf('#') > a.indexOf('.')) {
     out = produceClass(a);
   } else if (isIdAttr(a) && isClassAttr(a) && a.indexOf('#') > a.indexOf('.')) {
     out = produceId(a);
