@@ -99,6 +99,19 @@ function expandAttributeHandler(a) {
 }
 root.expandAttribute = expandAttributeHandler;
 
+function expandOperationHandler(p='', value='') {
+  let out = '';
+  if (p.indexOf('+') > -1) {
+    let g = p.split('+')
+             .filter(v => v !== '')
+             .map(v => expandAbbreviationHandler(v, value))
+             .join('');
+    out = g;
+  }
+  return out;
+}
+root.expandOperation = expandOperationHandler;
+
 if (!module.parent) {
   let args = process.argv.slice(2);
   console.log(expandAbbreviationHandler(args[0] || ''));

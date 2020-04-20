@@ -103,3 +103,16 @@ describe('Abbreviation', () => {
     );
   });
 });
+
+describe('Operations', () => {
+  it('should be add another tag', () => {
+    assert.equal(
+      lib.expandOperation('div+div'),
+      '<div></div><div></div>'
+    );
+    assert.equal(
+      lib.expandOperation('div+div+p'),
+      '<div></div><div></div><p></p>'
+    );
+  });
+});
