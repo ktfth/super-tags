@@ -27,12 +27,25 @@ function produceId(v='') {
   return out;
 }
 
+function isAttr(v='') { return v.indexOf('[') > -1 && v.indexOf(']'); }
+
+function produceAttrs(v='') {
+  let out = '';
+  let g = v.slice(v.indexOf('[') + 1, v.indexOf(']')).split(' ')
+           .filter(v => v !== '')
+           .join(' ').trim();
+  out = `${g}`;
+  return out;
+}
+
 function expandAttributeHandler(a) {
   let out = '';
   if (isClassAttr(a)) {
     out = produceClass(a);
   } else if (isIdAttr(a)) {
     out = produceId(a);
+  } else if (isAttr(a)) {
+    out = produceAttrs(a);
   }
   return out;
 }
