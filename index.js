@@ -7,13 +7,13 @@ function expandAbbreviationHandler(p='', v='') {
 
   if ((isIdAttr(p) || isClassAttr(p)) && isAttr(p)) {
     let attrFragment = p.slice(p.indexOf('['), p.indexOf(']') + 1);
-    p = p.replace(attrFragment, ' ');
+    p = p.replace(attrFragment, '');
     attr = expandAttributeHandler(p).trim() +
            ' ' +
            attr;
   } else if (isAttr(p)) {
     let attrFragment = p.slice(p.indexOf('['), p.indexOf(']') + 1);
-    p = p.replace(attrFragment, ' ');
+    p = p.replace(attrFragment, '');
   } if (isIdAttr(p) && isClassAttr(p) && p.indexOf('#') < p.indexOf('.')) {
     let classFragment = p.slice(p.indexOf('.'), p.length);
     attr = expandAttributeHandler(p.replace(classFragment, '')).trim() +
