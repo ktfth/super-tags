@@ -22,10 +22,10 @@ function hasPattern(p) { return p !== undefined; }
 function hasPatternId(p) { return hasPattern(p) && p.indexOf('#') > -1; }
 function hasPatternClass(p) { return hasPattern(p) && p.indexOf('.') > -1; }
 
-function fullTemplate(tag='', idProp='', classProp='', value='', identation='') {
+function fullTemplate(tag='', idProp='', classProp='', value='', indentation='') {
   if (value) {
     return `<${tag} id="${idProp}" class="${classProp}">` +
-           `\n${value}\n${identation}` +
+           `\n${value}\n${indentation}` +
            `</${tag}>`;
   } else {
     return `<${tag} id="${idProp}" class="${classProp}">` +
@@ -34,31 +34,31 @@ function fullTemplate(tag='', idProp='', classProp='', value='', identation='') 
   }
 }
 
-function classTemplate(tag='', classProp='', value='', identation='') {
+function classTemplate(tag='', classProp='', value='', indentation='') {
   if (value) {
-    return `<${tag} class="${classProp}">\n${value}\n${identation}</${tag}>`;
+    return `<${tag} class="${classProp}">\n${value}\n${indentation}</${tag}>`;
   } else {
     return `<${tag} class="${classProp}"></${tag}>`;
   }
 }
 
-function idTemplate(tag='', idProp='', value='', identation='') {
+function idTemplate(tag='', idProp='', value='', indentation='') {
   if (value) {
-    return `<${tag} id="${idProp}">\n${value}\n${identation}</${tag}>`;
+    return `<${tag} id="${idProp}">\n${value}\n${indentation}</${tag}>`;
   } else {
     return `<${tag} id="${idProp}"></${tag}>`;
   }
 }
 
-function minimalTemplate(tag='', value='', identation='') {
+function minimalTemplate(tag='', value='', indentation='') {
   if (value) {
-    return `<${tag}>\n${value}\n${identation}</${tag}>`;
+    return `<${tag}>\n${value}\n${indentation}</${tag}>`;
   } else {
     return `<${tag}></${tag}>`;
   }
 }
 
-function fragmentTemplateHandler(pattern, value='', identation='') {
+function fragmentTemplateHandler(pattern, value='', indentation='') {
   let out = '';
   let fragment = [];
   if (pattern === HTML5) {
@@ -66,15 +66,15 @@ function fragmentTemplateHandler(pattern, value='', identation='') {
   } else if (hasPatternId(pattern) && hasPatternClass(pattern)) {
     let fragment = pattern.split('#');
     let subFragment = fragment[1].split('.');
-    out = fullTemplate(fragment[0], subFragment[0], subFragment[1], value, identation);
+    out = fullTemplate(fragment[0], subFragment[0], subFragment[1], value, indentation);
   } else if (hasPatternClass(pattern)) {
     let fragment = pattern.split('.');
-    out = classTemplate(fragment[0], fragment[1], value, identation);
+    out = classTemplate(fragment[0], fragment[1], value, indentation);
   } else if (hasPatternId(pattern)) {
     let fragment = pattern.split('#');
-    out = idTemplate(fragment[0], fragment[1], value, identation);
+    out = idTemplate(fragment[0], fragment[1], value, indentation);
   } else if (pattern) {
-    out = minimalTemplate(pattern, value, identation);
+    out = minimalTemplate(pattern, value, indentation);
   }
   return out;
 }
@@ -85,7 +85,7 @@ function hasMergeSymbol(p) { return hasPattern(p) && p.indexOf('+') > -1; }
 
 const TEMPLATE = '$template$';
 
-function expandHandler(pattern, value='', identation='') {
+function expandHandler(pattern, value='', indentation='') {
   let out = null;
   if (pattern !== undefined && pattern.indexOf('>') > -1) {
     let fragments = pattern.split('>');
@@ -93,24 +93,24 @@ function expandHandler(pattern, value='', identation='') {
     fragments.forEach((v, i) => {
       let replacer = '$template$';
       let curr = null;
-      let identation = i > 0 ? new Array(i).fill('\xa0\xa0').join('') : ''
+      let indentation = i > 0 ? new Array(i).fill('\xa0\xa0').join('') : ''
       if (i === fragments.length - 1) {
         replacer = '';
       }
       if (hasMergeSymbol(v) || hasMultSymbol(v)) {
         if (fragments[i + 1] !== undefined) {
-          curr = expandHandler(fragments[i + 1], identation + value + identation, identation);
+          curr = expandHandler(fragments[i + 1], indentation + value + indentation, indentation);
           v = expandHandler(v, TEMPLATE);
-          v = v.replace('$template$', identation + expandHandler(fragments[i + 1], identation + value + identation, identation)) + identation;
+          v = v.replace('$template$', indentation + expandHandler(fragments[i + 1], indentation + value + indentation, indentation)) + indentation;
         } else {
-          v = expandHandler(v, identation + value + identation, identation);
+          v = expandHandler(v, indentation + value + indentation, indentation);
         }
-        v = v.replace('$template$', identation + curr + identation);
+        v = v.replace('$template$', indentation + curr + indentation);
         out = out.replace('$template$', v);
       } else if (i > 0) {
-        out = out.replace('$template$', identation + expandHandler(v, replacer, identation) + identation);
+        out = out.replace('$template$', indentation + expandHandler(v, replacer, indentation) + indentation);
       } else {
-        out = out.replace('$template$', expandHandler(v, replacer, identation));
+        out = out.replace('$template$', expandHandler(v, replacer, indentation));
       }
     });
   } else if (hasMergeSymbol(pattern)) {
@@ -128,7 +128,7 @@ function expandHandler(pattern, value='', identation='') {
             })
             .join('\n');
   } else {
-    out = fragmentTemplateHandler(pattern, value, identation);
+    out = fragmentTemplateHandler(pattern, value, indentation);
   }
   return out;
 }
