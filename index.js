@@ -133,7 +133,7 @@ function expandNestHandler(p='', value='') {
     let g = p.split('>');
     out = '$template$';
     g.forEach((v, i) => {
-      let indentation = i > 0 ? new Array(i).fill('\xa0\xa0').join('') : ''
+      let indentation = i > 0 ? new Array(i).fill('\xa0\xa0').join('') : '';
       if (g[i + 1] !== undefined) {
         v = expandOperationHandler(v, '$template$', indentation);
       } if (!/<[^>]*>/.test(v)) {
