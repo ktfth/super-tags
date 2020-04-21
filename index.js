@@ -133,11 +133,9 @@ function expandNestHandler(p='', value='') {
     let g = p.split('>');
     out = '$template$';
     g.forEach((v, i) => {
-      let curr = null;
       let indentation = i > 0 ? new Array(i).fill('\xa0\xa0').join('') : ''
       if (g[i + 1] !== undefined) {
         v = expandOperationHandler(v, '$template$', indentation);
-        curr = expandOperationHandler(g[i + 1], value, indentation);
       } if (!/<[^>]*>/.test(v)) {
         out = out.replace('$template$', expandOperationHandler(v, value, indentation));
       } else {
