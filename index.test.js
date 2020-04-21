@@ -145,4 +145,11 @@ describe('Nesting', () => {
       '<div>\n\xa0\xa0<article>\n\xa0\xa0\xa0\xa0<section></section>\n\xa0\xa0</article>\n</div>'
     );
   });
+
+  it('should be nest a deep tag with multiple operations', () => {
+    assert.equal(
+      lib.expandNest('div>article*2>section'),
+      '<div>\n\xa0\xa0<article>\n\xa0\xa0\xa0\xa0<section></section>\n\xa0\xa0</article>\n\xa0\xa0<article>\n\xa0\xa0\xa0\xa0<section></section>\n\xa0\xa0</article>\n</div>'
+    );
+  });
 });
