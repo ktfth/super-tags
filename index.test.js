@@ -129,6 +129,13 @@ describe('Operations', () => {
       '<div></div>\n<div></div>\n<div></div>\n<div></div>\n<div></div>\n<div></div>'
     );
   });
+
+  it('should be expand operation with a counter', () => {
+    assert.equal(
+      lib.expandOperation('div.some-class$*3'),
+      '<div class="some-class1"></div>\n<div class="some-class2"></div>\n<div class="some-class3"></div>'
+    );
+  });
 });
 
 describe('Nesting', () => {

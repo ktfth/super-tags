@@ -118,6 +118,7 @@ function expandOperationHandler(p='', value='', indentation='') {
     let g = p.split('*');
     g = (new Array(parseInt(g[1], 10)))
           .fill(expandAbbreviationHandler(g[0], value, indentation))
+          .map((v, i) => v.replace('$', i + 1))
           .join('\n');
     out = g;
   } else {
