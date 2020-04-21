@@ -108,25 +108,25 @@ describe('Operations', () => {
   it('should be add another tag', () => {
     assert.equal(
       lib.expandOperation('div+div'),
-      '<div></div><div></div>'
+      '<div></div>\n<div></div>'
     );
     assert.equal(
       lib.expandOperation('div+div+p'),
-      '<div></div><div></div><p></p>'
+      '<div></div>\n<div></div>\n<p></p>'
     );
   });
 
   it('should be multiple tags', () => {
     assert.equal(
       lib.expandOperation('div*3'),
-      '<div></div><div></div><div></div>'
+      '<div></div>\n<div></div>\n<div></div>'
     );
   });
 
   it('should be combine both operations', () => {
     assert.equal(
       lib.expandOperation('div*3+div*3'),
-      '<div></div><div></div><div></div><div></div><div></div><div></div>'
+      '<div></div>\n<div></div>\n<div></div>\n<div></div>\n<div></div>\n<div></div>'
     );
   });
 });

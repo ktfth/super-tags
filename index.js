@@ -112,13 +112,13 @@ function expandOperationHandler(p='', value='', indentation='') {
                  indentation
                );
              })
-             .join('');
+             .join('\n');
     out = g;
   } else if (p.indexOf('*') > -1) {
     let g = p.split('*');
     g = (new Array(parseInt(g[1], 10)))
           .fill(expandAbbreviationHandler(g[0], value, indentation))
-          .join('');
+          .join('\n');
     out = g;
   } else {
     out = expandAbbreviationHandler(p, value, indentation);
