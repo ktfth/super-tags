@@ -2,10 +2,25 @@
 
 const root = this;
 
+function html5Template() {
+  return '<!DOCTYPE HTML>\n' +
+         '<html lang="en">\n' +
+         '<head>\n' +
+         '	<meta charset="UTF-8">\n' +
+         '	<title></title>\n' +
+         '</head>\n' +
+         '<body>\n' +
+         '\n' +
+         '</body>\n' +
+         '</html>';
+}
+
 function expandAbbreviationHandler(p='', v='', indentation='\xa0\xa0') {
   let attr = expandAttributeHandler(p).trim();
 
-  if ((isIdAttr(p) || isClassAttr(p)) && isAttr(p)) {
+  if (p === 'html:5') {
+    return html5Template();
+  } if ((isIdAttr(p) || isClassAttr(p)) && isAttr(p)) {
     let attrFragment = p.slice(p.indexOf('['), p.indexOf(']') + 1);
     p = p.replace(attrFragment, '');
     attr = expandAttributeHandler(p).trim() +

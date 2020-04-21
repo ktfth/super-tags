@@ -8,6 +8,22 @@ describe('Abbreviation', () => {
     assert.equal(lib.expandAbbreviation('div'), '\xa0\xa0<div></div>');
   });
 
+  it('should produce html 5 markup', () => {
+    assert.equal(
+      lib.expandAbbreviation('html:5'),
+      '<!DOCTYPE HTML>\n' +
+      '<html lang="en">\n' +
+      '<head>\n' +
+      '	<meta charset="UTF-8">\n' +
+      '	<title></title>\n' +
+      '</head>\n' +
+      '<body>\n' +
+      '\n' +
+      '</body>\n' +
+      '</html>'
+    );
+  });
+
   it('should be expand to a tag with an value', () => {
     assert.equal(lib.expandAbbreviation('div', 'some-text'), '\xa0\xa0<div>\nsome-text\n\xa0\xa0</div>')
   });
