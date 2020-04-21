@@ -5,11 +5,11 @@ const assert = require('assert');
 
 describe('Abbreviation', () => {
   it('should be expand to a tag', () => {
-    assert.equal(lib.expandAbbreviation('div'), '<div></div>');
+    assert.equal(lib.expandAbbreviation('div'), '\xa0\xa0<div></div>');
   });
 
   it('should be expand to a tag with an value', () => {
-    assert.equal(lib.expandAbbreviation('div', 'some-text'), '<div>\n\xa0\xa0some-text\xa0\xa0\n</div>')
+    assert.equal(lib.expandAbbreviation('div', 'some-text'), '\xa0\xa0<div>\nsome-text\n\xa0\xa0</div>')
   });
 
   it('should be expand class attribute', () => {
@@ -50,56 +50,56 @@ describe('Abbreviation', () => {
   it('should be expand with class attribute', () => {
     assert.equal(
       lib.expandAbbreviation('div.some-class'),
-      '<div class="some-class"></div>'
+      '\xa0\xa0<div class="some-class"></div>'
     );
   });
 
   it('should be expand with id attribute', () => {
     assert.equal(
       lib.expandAbbreviation('div#unique-id'),
-      '<div id="unique-id"></div>'
+      '\xa0\xa0<div id="unique-id"></div>'
     );
   });
 
   it('should be expand with id and class attribute', () => {
     assert.equal(
       lib.expandAbbreviation('div#unique-id.some-class'),
-      '<div id="unique-id" class="some-class"></div>'
+      '\xa0\xa0<div id="unique-id" class="some-class"></div>'
     );
   });
 
   it('should be expand with class and id attribute', () => {
     assert.equal(
       lib.expandAbbreviation('div.some-class#unique-id'),
-      '<div class="some-class" id="unique-id"></div>'
+      '\xa0\xa0<div class="some-class" id="unique-id"></div>'
     );
   });
 
   it('should be expand with general attributes', () => {
     assert.equal(
       lib.expandAbbreviation('div[data-id="some-id"]'),
-      '<div data-id="some-id"></div>'
+      '\xa0\xa0<div data-id="some-id"></div>'
     );
   });
 
   it('should be expand class with general attributes', () => {
     assert.equal(
       lib.expandAbbreviation('div.some-class[data-id="some-id"]'),
-      '<div class="some-class" data-id="some-id"></div>'
+      '\xa0\xa0<div class="some-class" data-id="some-id"></div>'
     );
   });
 
   it('should be expand id with general attributes', () => {
     assert.equal(
       lib.expandAbbreviation('div#some-id[data-raw="raw-data"]'),
-      '<div id="some-id" data-raw="raw-data"></div>'
+      '\xa0\xa0<div id="some-id" data-raw="raw-data"></div>'
     );
   });
 
   it('should be expand with id and class more attributes', () => {
     assert.equal(
       lib.expandAbbreviation('div#unique-id.some-class[data-raw="raw-data"]'),
-      '<div id="unique-id" class="some-class" data-raw="raw-data"></div>'
+      '\xa0\xa0<div id="unique-id" class="some-class" data-raw="raw-data"></div>'
     );
   });
 });
@@ -135,14 +135,14 @@ describe('Nesting', () => {
   it('should be nest a tag', () => {
     assert.equal(
       lib.expandNest('div>article'),
-      '<div>\n<article></article>\n</div>'
+      '<div>\n\xa0\xa0<article></article>\n</div>'
     );
   });
 
   it('should be nest a deep tag', () => {
     assert.equal(
       lib.expandNest('div>article>section'),
-      '<div>\n<article>\n\xa0\xa0<section></section>\xa0\xa0\n</article>\n</div>'
+      '<div>\n\xa0\xa0<article>\n\xa0\xa0\xa0\xa0<section></section>\n\xa0\xa0</article>\n</div>'
     );
   });
 });
