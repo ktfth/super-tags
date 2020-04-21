@@ -138,7 +138,6 @@ function expandNestHandler(p='', value='') {
       if (g[i + 1] !== undefined) {
         v = expandOperationHandler(v, '$template$', indentation);
         curr = expandOperationHandler(g[i + 1], value, indentation);
-        v = v.replace('$template$', '$template$');
       } if (!/<[^>]*>/.test(v)) {
         out = out.replace('$template$', expandOperationHandler(v, value, indentation));
       } else {
