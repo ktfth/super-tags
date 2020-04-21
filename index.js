@@ -36,8 +36,8 @@ function expandAbbreviationHandler(p='', v='', indentation='\xa0\xa0') {
     p = p.split('#')[0] + ' ';
   }
   attr = attr.replace(p, '');
-  if (v) return `<${p}${attr}>\n${indentation}${v}${indentation}\n</${p.replace(' ', '')}>`;
-  return `<${p}${attr}></${p.replace(' ', '')}>`;
+  if (v) return `${indentation}<${p}${attr}>\n${v}\n${indentation}</${p.replace(' ', '')}>`;
+  return `${indentation}<${p}${attr}></${p.replace(' ', '')}>`;
 }
 root.expandAbbreviation = expandAbbreviationHandler;
 
@@ -133,12 +133,9 @@ function expandNestHandler(p='', value='') {
     let g = p.split('>');
     out = '$template$';
     g.forEach((v, i) => {
-      let replacer = '$template$';
       let curr = null;
       let indentation = i > 0 ? new Array(i).fill('\xa0\xa0').join('') : ''
-      if (i === g.length - 1) {
-        replacer = '';
-      } if (g[i + 1] !== undefined) {
+      if (g[i + 1] !== undefined) {
         v = expandOperationHandler(v, '$template$', indentation);
         curr = expandOperationHandler(g[i + 1], value, indentation);
         v = v.replace('$template$', '$template$');
