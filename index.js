@@ -128,13 +128,15 @@ function expandOperationHandler(p='', value='', indentation='') {
 }
 root.expandOperation = expandOperationHandler;
 
+const space = '\xa0\xa0';
+
 function expandNestHandler(p='', value='') {
   let out = '';
   if (p.indexOf('>') > -1) {
     let g = p.split('>');
     out = '{template}';
     g.forEach((v, i) => {
-      let indentation = i > 0 ? new Array(i).fill('\xa0\xa0').join('') : '';
+      let indentation = i > 0 ? new Array(i).fill(space).join('') : '';
       let rTemplate = new RegExp('\{template\}', 'g')
       let skip = '';
       if (g[i + 1] !== undefined) {
@@ -144,7 +146,7 @@ function expandNestHandler(p='', value='') {
           let c = 0;
           skip = v.slice(v.indexOf('{'), v.indexOf('}') + 1);
           v = v.replace(skip, '');
-          skip = indentation + indentation + skip.slice(1, skip.length - 1);
+          skip = indentation + space + skip.slice(1, skip.length - 1);
           out = out.replace(rTemplate, expandOperationHandler(v, skip, indentation));
           out.match(/\$/g).map((v, i) => out = out.replace('$', (i + 1).toString()));
         } else {
@@ -159,7 +161,12 @@ function expandNestHandler(p='', value='') {
 }
 root.expandNest = expandNestHandler;
 
+function highLevelExpansionHandler(p='', v='') {
+  return expandNestHandler(p, v);
+}
+root.highLevelExpansion = highLevelExpansionHandler;
+
 if (!module.parent) {
   let args = process.argv.slice(2);
-  console.log(expandNestHandler(args[0] || ''));
+  console.log(highLevelExpansionHandler(args[0] || ''));
 }
