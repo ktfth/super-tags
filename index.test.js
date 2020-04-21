@@ -159,4 +159,19 @@ describe('Nesting', () => {
       '<div>\n\xa0\xa0<article>\n\xa0\xa0\xa0\xa0<section></section>\n\xa0\xa0</article>\n\xa0\xa0<article>\n\xa0\xa0\xa0\xa0<section></section>\n\xa0\xa0</article>\n</div>'
     );
   });
+
+  it('should be expand operation with a counter', () => {
+    assert.equal(
+      lib.expandNest('div.some-class$*3>p{Item $}'),
+      '<div class="some-class1">' +
+        '\n\xa0\xa0<p>\n\xa0\xa0\xa0\xa0Item 1\n\xa0\xa0</p>' +
+      '\n</div>' +
+      '\n<div class="some-class2">' +
+        '\n\xa0\xa0<p>\n\xa0\xa0\xa0\xa0Item 2\n\xa0\xa0</p>' +
+      '\n</div>' +
+      '\n<div class="some-class3">' +
+        '\n\xa0\xa0<p>\n\xa0\xa0\xa0\xa0Item 3\n\xa0\xa0</p>' +
+      '\n</div>'
+    );
+  });
 });

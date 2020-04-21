@@ -136,10 +136,20 @@ function expandNestHandler(p='', value='') {
     g.forEach((v, i) => {
       let indentation = i > 0 ? new Array(i).fill('\xa0\xa0').join('') : '';
       let rTemplate = new RegExp('\{template\}', 'g')
+      let skip = '';
       if (g[i + 1] !== undefined) {
         v = expandOperationHandler(v, '{template}', indentation);
       } if (!/<[^>]*>/.test(v)) {
-        out = out.replace(rTemplate, expandOperationHandler(v, value, indentation));
+        if (v.indexOf('{') > -1 && v.indexOf('}') > -1) {
+          let c = 0;
+          skip = v.slice(v.indexOf('{'), v.indexOf('}') + 1);
+          v = v.replace(skip, '');
+          skip = indentation + indentation + skip.slice(1, skip.length - 1);
+          out = out.replace(rTemplate, expandOperationHandler(v, skip, indentation));
+          out.match(/\$/g).map((v, i) => out = out.replace('$', (i + 1).toString()));
+        } else {
+          out = out.replace(rTemplate, expandOperationHandler(v, value, indentation));
+        }
       } else {
         out = out.replace(rTemplate, v);
       }
