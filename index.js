@@ -131,15 +131,16 @@ function expandNestHandler(p='', value='') {
   let out = '';
   if (p.indexOf('>') > -1) {
     let g = p.split('>');
-    out = '$template$';
+    out = '{template}';
     g.forEach((v, i) => {
       let indentation = i > 0 ? new Array(i).fill('\xa0\xa0').join('') : '';
+      let rTemplate = new RegExp('\{template\}', 'g')
       if (g[i + 1] !== undefined) {
-        v = expandOperationHandler(v, '$template$', indentation);
+        v = expandOperationHandler(v, '{template}', indentation);
       } if (!/<[^>]*>/.test(v)) {
-        out = out.replace('$template$', expandOperationHandler(v, value, indentation));
+        out = out.replace(rTemplate, expandOperationHandler(v, value, indentation));
       } else {
-        out = out.replace('$template$', v);
+        out = out.replace(rTemplate, v);
       }
     });
   }
