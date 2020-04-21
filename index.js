@@ -171,6 +171,8 @@ function expandNestHandler(p='', value='') {
         out = out.replace(rTemplate, v);
       }
     });
+  } else {
+    out = expandOperationHandler(p, value);
   }
   return out;
 }
