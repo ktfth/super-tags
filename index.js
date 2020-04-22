@@ -51,8 +51,12 @@ function expandAbbreviationHandler(p='', v='', indentation='\xa0\xa0') {
     p = p.split('#')[0] + ' ';
   }
   attr = attr.replace(p, '');
-  if (v) return `${indentation}<${p}${attr}>\n${v}\n${indentation}</${p.replace(' ', '')}>`;
-  return `${indentation}<${p}${attr}></${p.replace(' ', '')}>`;
+  if (p) {
+    if (v) return `${indentation}<${p}${attr}>\n${v}\n${indentation}</${p.replace(' ', '')}>`;
+    return `${indentation}<${p}${attr}></${p.replace(' ', '')}>`;
+  } else {
+    return '';
+  }
 }
 root.expandAbbreviation = expandAbbreviationHandler;
 
