@@ -15,29 +15,59 @@ function html5Template() {
          '</html>';
 }
 
-function expandAbbreviationHandler(p='', v='', indentation='\xa0\xa0') {
-  let attr = expandAttributeHandler(p).trim();
+class TemplatePattern {
+  constructor(p) {
+    this.p = p;
+  }
 
-  if (p === 'html:5') {
+  isIdAttr() { return isIdAttr(this.p); }
+
+  isClassAttr() { return isClassAttr(this.p); }
+
+  isAttr() { return isAttr(this.p) };
+
+  isHTML5() { return this.p === 'html:5'; }
+
+  expandAttr() { return expandAttributeHandler(this.p).trim(); }
+
+  attrFragment() {
+    return this.p.slice(this.p.indexOf('['), this.p.indexOf(']') + 1);
+  }
+
+  classFragment() {
+    return this.p.slice(this.p.indexOf('.'), this.p.length);
+  }
+
+  idFragment() {
+    return this.p.slice(this.p.indexOf('#'), this.p.length);
+  }
+}
+
+function expandAbbreviationHandler(p='', v='', indentation='\xa0\xa0') {
+  let tp = new TemplatePattern(p);
+  let attr = tp.expandAttr();
+
+  if (tp.isHTML5()) {
     return html5Template();
-  } if ((isIdAttr(p) || isClassAttr(p)) && isAttr(p)) {
-    let attrFragment = p.slice(p.indexOf('['), p.indexOf(']') + 1);
-    p = p.replace(attrFragment, '');
-    attr = expandAttributeHandler(p).trim() +
+  } if ((tp.isIdAttr() || tp.isClassAttr()) && tp.isAttr()) {
+    let attrFragment = tp.attrFragment();
+    tp.p = p.replace(attrFragment, '');
+    attr = tp.expandAttr() +
            ' ' +
            attr;
-  } else if (isAttr(p)) {
-    let attrFragment = p.slice(p.indexOf('['), p.indexOf(']') + 1);
-    p = p.replace(attrFragment, ' ');
-  } if (isIdAttr(p) && isClassAttr(p) && p.indexOf('#') < p.indexOf('.')) {
-    let classFragment = p.slice(p.indexOf('.'), p.length);
-    attr = expandAttributeHandler(p.replace(classFragment, '')).trim() +
+  } else if (tp.isAttr()) {
+    let attrFragment = tp.attrFragment();
+    tp.p = p = p.replace(attrFragment, ' ');
+  } if (tp.isIdAttr() && tp.isClassAttr() && tp.p.indexOf('#') < tp.p.indexOf('.')) {
+    let classFragment = tp.classFragment();
+    tp.p = p = tp.p.replace(classFragment, '');
+    attr = tp.expandAttr() +
            ' ' +
            attr;
-    let skip = p.slice(p.indexOf('#'), p.length);
-    p = p.replace(skip, ' ');
-  } if (isIdAttr(p) && isClassAttr(p) && p.indexOf('#') > p.indexOf('.')) {
-    let idFragment = p.slice(p.indexOf('#'), p.length);
+    let skip = tp.idFragment();
+    tp.p = p = p.replace(skip, ' ');
+  } if (tp.isIdAttr() && tp.isClassAttr() && tp.p.indexOf('#') > tp.p.indexOf('.')) {
+    let idFragment = tp.idFragment();
     attr = expandAttributeHandler(idFragment);
     let classFragment = p.slice(p.indexOf('.'), p.length);
     attr = expandAttributeHandler(p.replace(idFragment, '')).trim() +
