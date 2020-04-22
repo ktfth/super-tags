@@ -224,7 +224,7 @@ function expandNestHandler(p='', value='', indentation='') {
       }
     });
   } else {
-    out = expandOperationHandler(p, value);
+    out = expandOperationHandler(p, value, indentation);
   }
   return out;
 }
