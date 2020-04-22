@@ -191,3 +191,10 @@ describe('Nesting', () => {
     );
   });
 });
+
+describe('Utils', () => {
+  it('should be replace tabs with space', () => {
+    assert.equal(lib.tabsToSpace('\t'), '\xa0\xa0');
+    assert.equal(lib.tabsToSpace('\t\t'), '\xa0\xa0\xa0\xa0');
+  });
+});

@@ -145,10 +145,16 @@ root.expandOperation = expandOperationHandler;
 
 const space = '\xa0\xa0';
 
+function tabsToSpaceHandler(indentation) {
+  let rTab = new RegExp('\t', 'g');
+  return indentation.replace(rTab, space);
+}
+root.tabsToSpace = tabsToSpaceHandler;
+
 function indentationHandler(i, indentation='') {
   let out = '';
   if (i > 0 && indentation.length > 0) {
-    out = indentation + new Array(i).fill(space).join('');
+    out = tabsToSpaceHandler(indentation) + new Array(i).fill(space).join('');
   } if (i > 0 && indentation.length === 0) {
     out = new Array(i).fill(space).join('');
   }
