@@ -145,13 +145,24 @@ root.expandOperation = expandOperationHandler;
 
 const space = '\xa0\xa0';
 
-function expandNestHandler(p='', value='') {
+function indentationHandler(i, indentation='') {
+  let out = '';
+  if (i > 0 && indentation.length > 0) {
+    out = indentation + new Array(i).fill(space).join('');
+  } if (i > 0 && indentation.length === 0) {
+    out = new Array(i).fill(space).join('');
+  }
+  return out;
+}
+
+function expandNestHandler(p='', value='', indentation='') {
   let out = '';
   if (p.indexOf('>') > -1) {
     let g = p.split('>');
     out = '{template}';
+    let _indentation = indentation;
     g.forEach((v, i) => {
-      let indentation = i > 0 ? new Array(i).fill(space).join('') : '';
+      indentation = indentationHandler(i, _indentation);
       let rTemplate = new RegExp('\{template\}', 'g')
       let skip = '';
       if (g[i + 1] !== undefined) {
@@ -178,8 +189,8 @@ function expandNestHandler(p='', value='') {
 }
 root.expandNest = expandNestHandler;
 
-function highLevelExpansionHandler(p='', v='') {
-  return expandNestHandler(p, v);
+function highLevelExpansionHandler(p='', v='', indentation='') {
+  return expandNestHandler(p, v, indentation);
 }
 root.highLevelExpansion = highLevelExpansionHandler;
 
