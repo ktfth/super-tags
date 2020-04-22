@@ -52,7 +52,7 @@ function expandAbbreviationHandler(p='', v='', indentation='\xa0\xa0') {
   }
   attr = attr.replace(p, '');
   if (p) {
-    if (v) return `${indentation}<${p}${attr}>\n${v}\n${indentation}</${p.replace(' ', '')}>`;
+    if (v) return `${indentation}<${p}${attr}>\n${v}${indentation}\n${indentation}</${p.replace(' ', '')}>`;
     return `${indentation}<${p}${attr}></${p.replace(' ', '')}>`;
   } else {
     return '';

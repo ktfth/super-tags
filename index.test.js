@@ -25,7 +25,7 @@ describe('Abbreviation', () => {
   });
 
   it('should be expand to a tag with an value', () => {
-    assert.equal(lib.expandAbbreviation('div', 'some-text'), '\xa0\xa0<div>\nsome-text\n\xa0\xa0</div>')
+    assert.equal(lib.expandAbbreviation('div', 'some-text'), '\xa0\xa0<div>\nsome-text\xa0\xa0\n\xa0\xa0</div>')
   });
 
   it('should be expand class attribute', () => {
@@ -165,14 +165,14 @@ describe('Nesting', () => {
   it('should be nest a deep tag', () => {
     assert.equal(
       lib.expandNest('div>article>section'),
-      '<div>\n\xa0\xa0<article>\n\xa0\xa0\xa0\xa0<section></section>\n\xa0\xa0</article>\n</div>'
+      '<div>\n\xa0\xa0<article>\n\xa0\xa0\xa0\xa0<section></section>\xa0\xa0\n\xa0\xa0</article>\n</div>'
     );
   });
 
   it('should be nest a deep tag with multiple operations', () => {
     assert.equal(
       lib.expandNest('div>article*2>section'),
-      '<div>\n\xa0\xa0<article>\n\xa0\xa0\xa0\xa0<section></section>\n\xa0\xa0</article>\n\xa0\xa0<article>\n\xa0\xa0\xa0\xa0<section></section>\n\xa0\xa0</article>\n</div>'
+      '<div>\n\xa0\xa0<article>\n\xa0\xa0\xa0\xa0<section></section>\xa0\xa0\n\xa0\xa0</article>\n\xa0\xa0<article>\n\xa0\xa0\xa0\xa0<section></section>\xa0\xa0\n\xa0\xa0</article>\n</div>'
     );
   });
 
@@ -180,13 +180,13 @@ describe('Nesting', () => {
     assert.equal(
       lib.expandNest('div.some-class$*3>p{Item $}'),
       '<div class="some-class1">' +
-        '\n\xa0\xa0<p>\n\xa0\xa0\xa0\xa0Item 1\n\xa0\xa0</p>' +
+        '\n\xa0\xa0<p>\n\xa0\xa0\xa0\xa0Item 1\xa0\xa0\n\xa0\xa0</p>' +
       '\n</div>' +
       '\n<div class="some-class2">' +
-        '\n\xa0\xa0<p>\n\xa0\xa0\xa0\xa0Item 2\n\xa0\xa0</p>' +
+        '\n\xa0\xa0<p>\n\xa0\xa0\xa0\xa0Item 2\xa0\xa0\n\xa0\xa0</p>' +
       '\n</div>' +
       '\n<div class="some-class3">' +
-        '\n\xa0\xa0<p>\n\xa0\xa0\xa0\xa0Item 3\n\xa0\xa0</p>' +
+        '\n\xa0\xa0<p>\n\xa0\xa0\xa0\xa0Item 3\xa0\xa0\n\xa0\xa0</p>' +
       '\n</div>'
     );
   });
