@@ -69,15 +69,16 @@ function expandAbbreviationHandler(p='', v='', indentation='\xa0\xa0') {
   } if (tp.isIdAttr() && tp.isClassAttr() && tp.p.indexOf('#') > tp.p.indexOf('.')) {
     let idFragment = tp.idFragment();
     attr = expandAttributeHandler(idFragment);
-    let classFragment = p.slice(p.indexOf('.'), p.length);
-    attr = expandAttributeHandler(p.replace(idFragment, '')).trim() +
+    let classFragment = tp.classFragment();
+    tp.p = p = p.replace(idFragment, '');
+    attr = tp.expandAttr() +
            ' ' +
            attr;
-    let skip = p.slice(p.indexOf('.'), p.length);
-    p = p.replace(skip, ' ');
-  } else if (isClassAttr(p)) {
+    let skip = tp.classFragment();
+    tp.p = p = p.replace(skip, ' ');
+  } else if (tp.isClassAttr()) {
     p = p.split('.')[0] + ' ';
-  } else if (isIdAttr(p)) {
+  } else if (tp.isIdAttr()) {
     p = p.split('#')[0] + ' ';
   }
   attr = attr.replace(p, '');
