@@ -41,6 +41,12 @@ class TemplatePattern {
   idFragment() {
     return this.p.slice(this.p.indexOf('#'), this.p.length);
   }
+
+  produceAttrs() { return produceAttrs(this.p); }
+
+  produceClass() { return produceClass(this.p); }
+
+  produceId() { return produceId(this.p); }
 }
 
 function expandAbbreviationHandler(p='', v='', indentation='\xa0\xa0') {
@@ -132,18 +138,19 @@ function produceAttrs(v='') {
 
 function expandAttributeHandler(a) {
   let out = '';
-  if ((isIdAttr(a) || isClassAttr(a)) && isAttr(a)) {
-    out = produceAttrs(a);
-  } else if (isIdAttr(a) && isClassAttr(a) && a.indexOf('#') > a.indexOf('.')) {
-    out = produceClass(a);
-  } else if (isIdAttr(a) && isClassAttr(a) && a.indexOf('#') > a.indexOf('.')) {
-    out = produceId(a);
-  } else if (isClassAttr(a)) {
-    out = produceClass(a);
-  } else if (isIdAttr(a)) {
-    out = produceId(a);
-  } else if (isAttr(a)) {
-    out = produceAttrs(a);
+  let tp = new TemplatePattern(a);
+  if ((tp.isIdAttr() || tp.isClassAttr()) && tp.isAttr()) {
+    out = tp.produceAttrs();
+  } else if (tp.isIdAttr() && tp.isClassAttr() && tp.p.indexOf('#') > tp.p.indexOf('.')) {
+    out = tp.produceClass();
+  } else if (tp.isIdAttr() && tp.isClassAttr() && tp.p.indexOf('#') > tp.p.indexOf('.')) {
+    out = tp.produceId();
+  } else if (tp.isClassAttr()) {
+    out = tp.produceClass();
+  } else if (tp.isIdAttr()) {
+    out = tp.produceId();
+  } else if (tp.isAttr()) {
+    out = tp.produceAttrs();
   }
   return out;
 }
