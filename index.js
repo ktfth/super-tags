@@ -203,6 +203,9 @@ function indentationHandler(i, indentation='') {
   return out;
 }
 
+function isHTMLHandler(p) { return /<[^>]*>/.test(p);  }
+root.isHTML = isHTMLHandler;
+
 function expandNestHandler(p='', value='', indentation='') {
   let out = '';
   if (p.indexOf('>') > -1) {
@@ -215,7 +218,7 @@ function expandNestHandler(p='', value='', indentation='') {
       let skip = '';
       if (g[i + 1] !== undefined) {
         v = expandOperationHandler(v, '{template}', indentation);
-      } if (!/<[^>]*>/.test(v)) {
+      } if (!isHTMLHandler(v)) {
         if (v.indexOf('{') > -1 && v.indexOf('}') > -1) {
           let c = 0;
           skip = v.slice(v.indexOf('{'), v.indexOf('}') + 1);
