@@ -208,10 +208,10 @@ root.isHTML = isHTMLHandler;
 
 function expandNestHandler(p='', value='', indentation='') {
   let out = '';
+  let _indentation = indentation;
   if (p.indexOf('>') > -1) {
     let g = p.split('>');
     out = '{template}';
-    let _indentation = indentation;
     g.forEach((v, i) => {
       indentation = indentationHandler(i, _indentation);
       let rTemplate = new RegExp('\{template\}', 'g')
