@@ -7,6 +7,6 @@
     "test": "mocha ./**/*.test.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Kaique da Silva <kaeyosthaeron@gmail.com>",
   "license": "ISC"
 }
