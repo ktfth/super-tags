@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+const lib = require('./index');
+
+let args = process.argv.slice(2);
+console.log(lib.highLevelExpansion(args[0] || ''));
